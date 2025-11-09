@@ -10,7 +10,6 @@
 | **Difficulty** | Easy |
 | **Author** | Yahaya Meddy |
 | **Solver** | Radzi Zamri |
-| **Points** | 100 |
 | **Goal** | Achieve Authentication Bypass via HTTP header injection |
 
 ### 🛠️ Tools Used
@@ -95,3 +94,4 @@ The solution required injecting the custom HTTP header found in the decoded note
 **Tags:** `#picoCTF #WebExploitation #CTFWriteup #CyberSecurity #AuthenticationBypass #HTTPHeaderInjection #ROT13 #BurpSuite`
 
 **Date Solved:** [Add your solve date here]
+
