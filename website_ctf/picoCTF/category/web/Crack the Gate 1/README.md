@@ -45,7 +45,7 @@ This message gives us a special key (an HTTP header) to bypass the login.
     ```http
     POST /login HTTP/1.1
     Host: amiable-citadel.picoctf.net:57543
-    X-Dev-Access: yes  <-- ADDED SECRET KEY
+    X-Dev-Access: yes  <-- ADDED
     Content-Type: application/json
     ...
     ```
@@ -65,3 +65,4 @@ This message gives us a special key (an HTTP header) to bypass the login.
 * **Look Everywhere:** Always check comments and hidden parts of the source code.
 * **ROT13 is Common:** If you see a hint about rotating letters, think of ROT13.
 * **Headers are Doors:** You can often find a way to cheat a system by adding or changing special **HTTP headers** in your web requests.
+
