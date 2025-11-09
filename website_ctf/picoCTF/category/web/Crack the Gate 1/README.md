@@ -14,7 +14,7 @@
 
 ### 🛠️ Tools Used
 
-* **Web Browser** (Developer Tools)
+* **Web Browser** 
 * **Burp Suite** Community Edition
 * **CyberChef**
 
@@ -82,3 +82,4 @@ The solution required injecting the custom HTTP header found in the decoded note
 * **Information Leakage:** Always check HTML source code for comments and debugging elements left in production.
 * **Cipher Recognition:** Recognize common weak ciphers like ROT13 based on clear hints.
 * **HTTP Header Attacks:** Custom, non-standard headers (`X-Dev-Access`) can be an attack vector if they grant elevated privileges without strict server-side validation.
+
