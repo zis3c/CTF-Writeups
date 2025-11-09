@@ -8,7 +8,7 @@ Collection of CTF write-ups and solutions for learning and reference.
 4. Open the markdown file inside the challenge folder to see the detailed write-up and solution steps.
 
 ## Contents
-- website_ctf/
+- category/
   - web/ – Web exploitation challenges
   - crypto/ – Cryptography challenges
   - pwn/ – Binary exploitation challenges
