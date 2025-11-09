@@ -79,7 +79,7 @@ A successful SSTI chain was constructed to gain access to Python's file reading 
 
 ---
 
-### 🧠 Notes / Takeaway
+### 🧠 Key Concepts & Lessons Learned
 
 * **Check Server Headers:** Server response headers (like `Werkzeug/Python`) can reveal the technology stack and potential vulnerabilities.
 * **SSTI is Powerful:** A successful Server-Side Template Injection can lead to remote code execution (RCE) and full server compromise.
