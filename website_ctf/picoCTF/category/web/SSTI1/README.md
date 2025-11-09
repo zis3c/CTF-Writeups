@@ -25,7 +25,7 @@ The challenge description and hints pointed to a **Server-Side Template Injectio
 
 ---
 
-### 1. Recon (First Look)
+### 1. Reconnaissance (First Look)
 
 * **The Problem:** The website allowed users to "announce" messages, but the input was not properly sanitized.
 * **Action:** I sent a simple POST request to the website and checked the server's response headers.
