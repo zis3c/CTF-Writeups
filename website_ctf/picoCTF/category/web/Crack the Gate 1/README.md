@@ -39,7 +39,7 @@ Found a ROT13‑encoded comment in the page source that reveals a bypass header.
 I inspected the login page HTML using browser DevTools and found a commented, encoded string in the page source.
 
 <figure>
-  <img src="./images/login-page.png" alt="Login page screenshot" width="720" />
+  <img src="./images/login-page.png" alt="Login page screenshot" width="1080" />
   <figcaption><strong>Figure 1</strong> — Login page (entry point).</figcaption>
 </figure>
 
@@ -52,4 +52,5 @@ I inspected the login page HTML using browser DevTools and found a commented, en
 
 ### 2. Analysis — decode the key
 The encoded string was ROT13. I decoded it with CyberChef and obtained the bypass instruction:
+
 
