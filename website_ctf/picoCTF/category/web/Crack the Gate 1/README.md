@@ -62,7 +62,7 @@ The decoded message instructed us to inject a custom HTTP header to bypass the l
 
 3.  Sending the modified request returned a successful response (HTTP 200 OK) containing the flag.
 
-    ![Burp Suite showing the request with the added header and the flag in the response](./images/flag.jpg)
+    ![Burp Suite showing the request with the added header and the flag in the response](./images/flag.png)  <-- **UPDATED TO .png**
 
 ---
 
