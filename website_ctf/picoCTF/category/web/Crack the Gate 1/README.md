@@ -1,7 +1,5 @@
 # 🚪 Crack the Gate 1
 
----
-
 ## Challenge Metadata
 
 | Detail | Value |
@@ -11,66 +9,71 @@
 | **Difficulty** | Easy |
 | **Author** | Yahaya Meddy |
 | **Solver** | Radzi Zamri |
-| **Goal** | Find the flag by bypassing the login mechanism. |
+| **Goal** | Achieve Authentication Bypass to retrieve the flag. |
 
 ### 🛠️ Tools Used
 
-* **Web Browser:** Chrome/Firefox (Developer Tools)
-* **Burp Suite** Community Edition: For intercepting and modifying HTTP requests.
-* **CyberChef:** For decoding common ciphers like ROT13.
+* **Web Browser** (Developer Tools)
+* **Burp Suite** Community Edition
+* **CyberChef**
 
-## 💡 Solution Methodology
+---
 
-This challenge tests the ability to **discover and decode developer notes** hidden in the client-side code, which leads to an **authentication bypass** using a custom HTTP header.
+### 1. Reconnaissance (Finding the Leak)
 
-### 1. Reconnaissance and Code Inspection
+The challenge hints pointed toward a hidden note left by a developer in the code.
 
-The first hint suggested that developers sometimes leave hidden notes in the code.
+* **Action:** I navigated to the login page and used the browser's **Inspect Element** to check the **HTML source code**.
+* **Finding:** I located a commented-out, encoded string in the body that contained the secret:
 
-* **Action:** I navigated to the login page and used the browser's **Inspect Element** to examine the HTML source code.
-* **Finding:** A suspicious, non-plain-text comment was found in the `<body>` of the HTML:
     ```html
     ```
-    ![HTML source showing the ROT13 comment](https://raw.githubusercontent.com/zis3c/CTF-Writeups/main/website_ctf/picoCTF/category/web/Crack%20the%20Gate%201/assets/inspect-element.png)
+    ![Screenshot of the login page HTML source code](./images/inspect-element.png)
 
-### 2. Analysis and Cipher Decoding (ROT13)
+---
 
-The second hint pointed towards **rotating letters by 13 positions**, identifying the comment as a **ROT13** cipher.
+### 2. Analysis (Decoding the Key)
 
-* **Action:** I input the encoded message into **CyberChef** and applied the ROT13 operation.
-* **Result:** The decoded message provided the key for the bypass:
+The hints suggested using ROT13 (rotating letters by 13 positions) to decode the message.
+
+* **Action:** I used **CyberChef** and the ROT13 operation on the encoded string.
+* **Decoded Key:** The message revealed the bypass method:
     `NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes"`
-    
-    ![CyberChef decoding the message via ROT13](https://raw.githubusercontent.com/zis3c/CTF-Writeups/main/website_ctf/picoCTF/category/web/Crack%20the%20Gate%201/assets/cyberchef.png)
 
-### 3. Exploitation via HTTP Header Manipulation
+    ![CyberChef successfully decoding the message via ROT13](./images/cyberchef.png)
 
-The solution required injecting the custom HTTP header found in the note into the login request.
+---
 
-1.  I initiated a failed login attempt with dummy credentials (`test`) and intercepted the `POST /login` request using **Burp Suite Repeater** (test-request.jpg).
-2.  I then modified the request by inserting the required header on a new line: `X-Dev-Access: yes`.
+### 3. Exploit (Header Injection)
+
+The decoded message instructed us to inject a custom HTTP header to bypass the login check.
+
+1.  I intercepted a failed login attempt using **Burp Suite Repeater**.
+2.  I then manually added the required header to the request: `X-Dev-Access: yes`.
 
     ```http
     POST /login HTTP/1.1
-    Host: amiable-citadel.picoctf.net:57202
-    X-Dev-Access: yes  <-- ADDED BYPASS HEADER
+    Host: amiable-citadel.picoctf.net:57543
+    X-Dev-Access: yes  <-- INJECTED BYPASS HEADER
     Content-Type: application/json
     ...
     {"email":"ctf-player@picoctf.org","password":"test"}
     ```
 
-3.  Sending this modified request resulted in a **HTTP 200 OK** response that successfully contained the flag.
-    
-    ![Burp Suite showing the request with the added header and the flag in the response](https://raw.githubusercontent.com/zis3c/CTF-Writeups/main/website_ctf/picoCTF/category/web/Crack%20the%20Gate%201/assets/flag.jpg)
+3.  Sending the modified request returned a successful response (HTTP 200 OK) containing the flag.
 
-## ✅ Flag
+    ![Burp Suite showing the request with the added header and the flag in the response](./images/flag.jpg)
+
+---
+
+### 4. Flag:
 
 `picoCTF{brut4_f0rc4_b3a957eb}`
 
 ---
 
-### 🧠 Key Concepts & Lessons Learned
+### 🧠 Lessons Learned
 
-* **Client-Side Leakage:** Always check the HTML source for developer comments; sometimes, critical bypass information is left behind.
-* **Cipher Recognition:** Hints about "rotating letters" are a strong giveaway for the simple **ROT13** substitution cipher.
-* **HTTP Header Abuse:** Custom HTTP headers, especially non-standard ones (like `X-Dev-Access`), can be used for authentication or authorization bypasses if they are not properly removed before production deployment.
+* **Information Leakage:** Always inspect the HTML source for comments, hidden fields, and notes left by developers.
+* **Cipher Recognition:** Recognize common CTF ciphers like ROT13 when hints point to simple letter rotation.
+* **HTTP Header Attacks:** Custom headers (often starting with 'X-') can be a serious security flaw if they grant special access without proper validation.
