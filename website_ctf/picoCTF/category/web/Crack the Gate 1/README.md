@@ -1,59 +1,77 @@
-# 🚪 Crack the Gate 1 - Writeup
+# 🚪 Crack the Gate 1
 
-## Challenge Information
+## Challenge Metadata
 
-| **Category** | **Difficulty** | **Author** | **Solver** |
-|--------------|----------------|------------|------------|
-| Web Exploitation | Easy | Yahaya Meddy | Radzi Zamri |
+| Detail | Value |
+| :--- | :--- |
+| **Title** | Crack the Gate 1 |
+| **Category** | Web |
+| **Difficulty** | Easy |
+| **Author** | Yahaya Meddy |
+| **Solver** | Radzi Zamri |
+| **Goal** | Achieve Authentication Bypass via HTTP header injection. |
 
-### Challenge Description
-Investigate a restricted web portal where a person of interest is hiding sensitive data. The login email (`ctf-player@picoctf.org`) is known, but the password remains unknown. The challenge suggests the developer may have left a secret bypass method.
+### 🛠️ Tools Used
+
+* **Web Browser** (Developer Tools)
+* **Burp Suite** Community Edition
+* **CyberChef**
 
 ---
 
-## 🛠️ Tools Used
-- **Web Browser** (Developer Tools)
-- **Burp Suite** Community Edition
-- **CyberChef**
+### 1. Reconnaissance (Finding the Leak)
+
+The challenge hints directed us to look for a hidden note left by a developer in the client-side code.
+
+* **Action:** I navigated to the login page and used the browser's **Inspect Element** to examine the **HTML source code**.
+* **Finding:** I located a commented-out, encoded string in the body that contained the secret:
+
+    ![Screenshot of the login page HTML source code](./images/inspect-element.png)
 
 ---
 
-## 🔍 Solution Walkthrough
+### 2. Analysis (Decoding the Key)
 
-### 1. Reconnaissance - Finding the Leak
+The hints suggested using **ROT13** (rotating letters by 13 positions) to decode the message.
 
-The challenge hinted at potential developer notes hidden in the client-side code.
+* **Action:** I used **CyberChef** to apply the ROT13 operation on the encoded string.
+* **Decoded Key:** The message revealed the essential bypass method:
+    `NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes"`
 
-**Steps:**
-1. Navigated to the login page
-2. Used browser's **Inspect Element** to examine HTML source code
-3. Discovered a commented-out, encoded string in the body
+    ![CyberChef successfully decoding the message via ROT13](./images/cyberchef.png)
 
-![HTML Source Code Inspection](./images/inspect-element.png)
+---
 
-### 2. Analysis - Decoding the Secret
+### 3. Exploit (Header Injection)
 
-The hints suggested using **ROT13** cipher for decoding.
+The solution required injecting the custom HTTP header found in the decoded note into the login request.
 
-**Steps:**
-1. Extracted the encoded string from HTML comments
-2. Used **CyberChef** with ROT13 operation to decode the message
-3. Revealed the bypass method: `NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes"`
+1.  I intercepted a failed login attempt using **Burp Suite Repeater**.
+2.  I then manually added the required header to the request: `X-Dev-Access: yes`.
 
-![CyberChef ROT13 Decoding](./images/cyberchef.png)
+    ```http
+    POST /login HTTP/1.1
+    Host: amiable-citadel.picoctf.net:57543
+    X-Dev-Access: yes  <-- INJECTED BYPASS HEADER
+    Content-Type: application/json
+    ...
+    {"email":"ctf-player@picoctf.org","password":"test"}
+    ```
 
-### 3. Exploitation - Header Injection
+3.  Sending the modified request returned a successful **HTTP 200 OK** response containing the flag.
 
-**Steps:**
-1. Intercepted a failed login attempt using **Burp Suite Repeater**
-2. Added the custom header: `X-Dev-Access: yes`
-3. Sent the modified request:
+    ![Burp Suite showing the request with the added header and the flag in the response](./images/flag.png)
 
-```http
-POST /login HTTP/1.1
-Host: amiable-citadel.picoctf.net:57543
-X-Dev-Access: yes
-Content-Type: application/json
-Content-Length: 48
+---
 
-{"email":"ctf-player@picoctf.org","password":"test"}
+### 4. Flag:
+
+`picoCTF{brut4_f0rc4_b3a957eb}`
+
+---
+
+### 🧠 Key Concepts & Lessons Learned
+
+* **Information Leakage:** Always check HTML source code for comments and debugging elements left in production.
+* **Cipher Recognition:** Recognize common weak ciphers like ROT13 based on clear hints.
+* **HTTP Header Attacks:** Custom, non-standard headers (`X-Dev-Access`) can be an attack vector if they grant elevated privileges without strict server-side validation.
