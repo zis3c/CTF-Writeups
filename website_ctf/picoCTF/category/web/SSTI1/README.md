@@ -6,7 +6,7 @@
 | :--- | :--- |
 | **CTF** | picoCTF |
 | **Challenge** | SSTI 1 |
-| **Category** | Web |
+| **Category** | Web Exploitation |
 | **Difficulty** | Easy |
 | **Author** | Venax |
 | **Solver** | Radzi Zamri |
