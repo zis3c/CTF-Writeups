@@ -10,66 +10,66 @@
 | **Difficulty** | Easy |
 | **Author** | Venax |
 | **Solver** | Radzi Zamri |
-| **Goal** | Find the flag by exploiting a Server-Side Template Injection (SSTI) vulnerability. |
+| **Goal** | Exploit Server-Side Template Injection to retrieve the flag |
 
 ### 🛠️ Tools Used
 
-* **Web Browser**
+* **Web Browser** (Developer Tools)
 * **Burp Suite** Community Edition
 
 ---
 
 ## 🔍 Challenge Overview
 
-The challenge description and hints pointed to a **Server-Side Template Injection (SSTI)** vulnerability. The goal was to exploit this flaw in a web application built on **Python/Flask** to achieve Remote Code Execution (RCE) and retrieve the flag.
+**SSTI 1** is a web exploitation challenge that demonstrates **Server-Side Template Injection** vulnerability in a Python Flask application. The application processes user input through a template engine without proper sanitization, allowing arbitrary code execution.
 
 ---
 
-### 1. Reconnaissance (First Look)
+### 1. Reconnaissance (Identifying the Vulnerability)
 
-* **The Problem:** The website allowed users to "announce" messages, but the input was not properly sanitized.
-* **Action:** I sent a simple POST request to the website and checked the server's response headers.
-* **What I Found:** The server responded with **`Server: Werkzeug/3.0.3 Python/3.8.10`**. This strongly suggested the website was built using **Flask** with the **Jinja2** template engine, a common SSTI target.
+The initial analysis revealed critical information about the application's technology stack through server response headers.
 
-![Server: Werkzeug/3.0.3 Python/3.8.10 Response Header](images/server-ver.png)
+* **Action:** I sent a POST request to the application and examined the server response headers.
+* **Finding:** The server header **`Werkzeug/3.0.3 Python/3.8.10`** identified this as a Flask application using Jinja2 templating, indicating potential SSTI vulnerability:
+
+![Server response header](images/server-ver.png)
 
 ---
 
 ### 2. Analysis (Confirming SSTI)
 
-To confirm the template execution vulnerability, a simple mathematical expression was tested.
+To confirm the template injection vulnerability, I tested basic template expressions in the application.
 
-* **Testing the Vulnerability:** I used Burp Suite Repeater to send a test payload: `{{7*7}}` in the `content` parameter.
-* **The Result:** The server calculated and returned **49** in the response. This proved that the server was executing the template code.
+* **Action:** I used **Burp Suite Repeater** to send a POST request with a simple template expression.
+* **Confirmation:** The expression **`{{7*7}}`** was executed server-side, returning the calculated value **`49`**, confirming Jinja2 SSTI vulnerability:
 
-![SSTI Test Output of 49](images/test-ssti.png)
+![Output of the executed template expression {{7*7}}](images/test-ssti.png)
 
 ---
 
-### 3. Exploit (Getting the Flag)
+### 3. Exploit (Template Injection to RCE)
 
-A successful SSTI chain was constructed to gain access to Python's file reading capabilities.
+The solution required exploiting the SSTI vulnerability to access Python's file system and read the flag.
 
-#### A. Finding Useful Classes
+* **Enumeration:** I enumerated available Python classes to identify those with file access capabilities:
 
-* **Action:** I listed all available Python classes in the environment using the payload: `{{ ''.__class__.__mro__[1].__subclasses__() }}`.
-* **Finding:** This returned a long list of classes. I searched this list for a class with access to the `__builtins__` module.
+    ```python
+    {{ ''.__class__.__mro__[1].__subclasses__() }}
+    ```
 
-![List of Python classes (subclasses)](images/test-templPython.png)
+* **Class Discovery:** After analyzing the class list, I identified that index **`283`** provided access to Python's built-in functions including **`open()`**:
 
-* **Locating File Access:** I tested several indices and found that the class at index **283** had access to the `__builtins__` module, which includes the native **`open()`** function.
+![Python __builtins__ module contents showing open() function](images/func-open.png)
 
-![Accessing __builtins__ and open() function](images/func-open.png)
+* **Flag Extraction:** Using the discovered file access capability, I constructed the final payload:
 
-#### B. Reading the Flag
-
-* **Action:** Using the `open()` function, I constructed the final payload to read the `flag` file:
     ```python
     {{ ''.__class__.__mro__[1].__subclasses__()[283].__init__.__globals__.__builtins__.open('flag').read() }}
     ```
-* **Result:** I sent this payload, and the server successfully executed the file read operation, returning the flag.
 
-![Final Flag Output](images/flag.png)
+* **Execution:** The server executed the template injection and returned the flag in the response.
+
+![Final output showing the retrieved flag](images/flag.png)
 
 ---
 
@@ -81,7 +81,8 @@ A successful SSTI chain was constructed to gain access to Python's file reading 
 
 ### 🧠 Key Concepts & Lessons Learned
 
-* **Check Server Headers:** Server response headers (like `Werkzeug/Python`) can reveal the technology stack and potential vulnerabilities.
-* **SSTI is Powerful:** A successful Server-Side Template Injection can lead to remote code execution (RCE) and full server compromise.
-* **Python Internals Help:** In Jinja2 SSTI, you can access Python's internal classes and functions to read files or run commands via the `__subclasses__` method.
-* **Sanitize Inputs:** Web applications must always sanitize and validate user input, especially when using template engines.
+* **Server-Side Template Injection (SSTI):** User input processed as template code without sanitization creates critical code execution vulnerabilities.
+* **Technology Fingerprinting:** Server headers like **`Werkzeug/Python`** immediately identify Flask/Jinja2 applications and potential attack vectors.
+* **Python Object Chain Exploitation:** Using **`__class__`**, **`__mro__`**, and **`__subclasses__()`** to traverse Python's inheritance hierarchy and access sensitive functions.
+* **File System Access Through SSTI:** Leveraging built-in functions like **`open()`** through template injection to read server files demonstrates the severity of unpatched SSTI vulnerabilities.
+* **Input Validation Importance:** Web applications must rigorously sanitize and validate all user input, especially when processed by template engines.
