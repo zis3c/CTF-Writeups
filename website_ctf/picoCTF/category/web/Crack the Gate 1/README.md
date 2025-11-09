@@ -1,79 +1,55 @@
 # 🚪 Crack the Gate 1
 
+**CTF:** picoCTF  
+**Category:** Web  
+**Difficulty:** Easy  
+**Author:** Yahaya Meddy  
+**Solver:** Radzi Zamri
+
+---
+
+## TL;DR
+Found a ROT13‑encoded comment in the page source that reveals a bypass header. Adding `X-Dev-Access: yes` to the login request returns the flag.
+
+---
+
 ## Challenge Metadata
 
-| Detail | Value |
-| :--- | :--- |
-| **Title** | Crack the Gate 1 |
-| **Category** | Web |
-| **Difficulty** | Easy |
-| **Author** | Yahaya Meddy |
-| **Solver** | Radzi Zamri |
-| **Goal** | Achieve Authentication Bypass to retrieve the flag. |
-
-### 🛠️ Tools Used
-
-* **Web Browser** (Developer Tools)
-* **Burp Suite** Community Edition
-* **CyberChef**
+| Detail       | Value                                                |
+|--------------|------------------------------------------------------|
+| **Title**    | Crack the Gate 1                                     |
+| **Category** | Web                                                  |
+| **Difficulty**| Easy                                               |
+| **Author**   | Yahaya Meddy                                         |
+| **Solver**   | Radzi Zamri                                          |
+| **Goal**     | Achieve authentication bypass and retrieve the flag. |
 
 ---
 
-### 1. Reconnaissance (Finding the Leak)
-
-The challenge hints pointed toward a hidden note left by a developer in the code.
-
-* **Action:** I navigated to the login page and used the browser's **Inspect Element** to check the **HTML source code**.
-* **Finding:** I located a commented-out, encoded string in the body that contained the secret:
-
-    ```html
-    ```
-    ![Screenshot of the login page HTML source code](./images/inspect-element.png)
+## Tools
+- Web browser (Developer Tools)  
+- Burp Suite (Repeater)  
+- CyberChef
 
 ---
 
-### 2. Analysis (Decoding the Key)
+## Walkthrough
 
-The hints suggested using ROT13 (rotating letters by 13 positions) to decode the message.
+### 1. Reconnaissance — find the leak
+I inspected the login page HTML using browser DevTools and found a commented, encoded string in the page source.
 
-* **Action:** I used **CyberChef** and the ROT13 operation on the encoded string.
-* **Decoded Key:** The message revealed the bypass method:
-    `NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes"`
+<figure>
+  <img src="./images/login-page.png" alt="Login page screenshot" width="720" />
+  <figcaption><strong>Figure 1</strong> — Login page (entry point).</figcaption>
+</figure>
 
-    ![CyberChef successfully decoding the message via ROT13](./images/cyberchef.png)
-
----
-
-### 3. Exploit (Header Injection)
-
-The decoded message instructed us to inject a custom HTTP header to bypass the login check.
-
-1.  I intercepted a failed login attempt using **Burp Suite Repeater**.
-2.  I then manually added the required header to the request: `X-Dev-Access: yes`.
-
-    ```http
-    POST /login HTTP/1.1
-    Host: amiable-citadel.picoctf.net:57543
-    X-Dev-Access: yes  <-- INJECTED BYPASS HEADER
-    Content-Type: application/json
-    ...
-    {"email":"ctf-player@picoctf.org","password":"test"}
-    ```
-
-3.  Sending the modified request returned a successful response (HTTP 200 OK) containing the flag.
-
-    ![Burp Suite showing the request with the added header and the flag in the response](./images/flag.png)  <-- **UPDATED TO .png**
+<figure>
+  <img src="./images/inspect-element.png" alt="Hidden comment in HTML source" width="720" />
+  <figcaption><strong>Figure 2</strong> — Hidden comment in page source (ROT13 encoded).</figcaption>
+</figure>
 
 ---
 
-### 4. Flag:
+### 2. Analysis — decode the key
+The encoded string was ROT13. I decoded it with CyberChef and obtained the bypass instruction:
 
-`picoCTF{brut4_f0rc4_b3a957eb}`
-
----
-
-### 🧠 Lessons Learned
-
-* **Information Leakage:** Always inspect the HTML source for comments, hidden fields, and notes left by developers.
-* **Cipher Recognition:** Recognize common CTF ciphers like ROT13 when hints point to simple letter rotation.
-* **HTTP Header Attacks:** Custom headers (often starting with 'X-') can be a serious security flaw if they grant special access without proper validation.
