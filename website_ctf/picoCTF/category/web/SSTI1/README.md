@@ -55,7 +55,7 @@ A successful SSTI chain was constructed to gain access to Python's file reading 
 * **Action:** I listed all available Python classes in the environment using the payload: `{{ ''.__class__.__mro__[1].__subclasses__() }}`.
 * **Finding:** This returned a long list of classes. I searched this list for a class with access to the `__builtins__` module.
 
-![List of Python classes (subclasses)](images/test-templPython.jpg)
+![List of Python classes (subclasses)](images/test-templPython.png)
 
 * **Locating File Access:** I tested several indices and found that the class at index **283** had access to the `__builtins__` module, which includes the native **`open()`** function.
 
