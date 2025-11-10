@@ -80,5 +80,3 @@ The solution required decoding the cookie value to reveal the hidden secret.
 * **Developer Tools Proficiency:** Web browser developer tools and intercepting proxies like Burp Suite are essential for examining HTTP headers and cookies.
 * **Information in Plain Sight:** As hinted, important information is often hidden in plain sight within HTTP headers and cookies.
 * **Cookie Security:** While cookies are essential for web functionality, they should not contain sensitive information in easily decodable formats.
-* 
-
