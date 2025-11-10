@@ -55,11 +55,11 @@ The server response contained valuable information in the form of a cookie that 
 
 The solution required decoding the cookie value to reveal the hidden secret.
 
-*  **Cookie Extraction:** I extracted the `secret_recipes` cookie value from the server response.
+1.  **Cookie Extraction:** I extracted the `secret_recipes` cookie value from the server response.
 
-*  **Base64 Decoding:** The cookie value appeared to be Base64 encoded. I decoded it using Burp Suite's built-in decoder.
+2.  **Base64 Decoding:** The cookie value appeared to be Base64 encoded. I decoded it using Burp Suite's built-in decoder.
 
-*  **Flag Revelation:** After Base64 decoding, the hidden flag was revealed in the cookie value.
+3.  **Flag Revelation:** After Base64 decoding, the hidden flag was revealed in the cookie value.
 
 **Decoding Process:**
 - Original Cookie: `eC1jbONUEncjMDBrMWYfbTBuc3R1c1ssMHZ1c19jMDBraWVzX0E2BkRwM004f043D43D`
