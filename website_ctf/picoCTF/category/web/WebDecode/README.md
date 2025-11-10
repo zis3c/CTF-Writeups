@@ -43,7 +43,7 @@ Following the hint to use the web inspector, I thoroughly examined the HTML sour
 * **Action:** I used the browser's **Inspect Element** feature to examine all HTML attributes and hidden elements.
 * **Finding:** In the `about` section, I discovered a suspicious `notify_true` attribute containing a Base64 encoded string:
 
-    ```html
+    ```
     <section class="about" notify_true="c61jb0NURnt3ZWJfc3VjYzNzc2Z1bGx5X2QzYzBkZWQfZGYwZGE3Mjd9">
     ```
 
@@ -80,3 +80,4 @@ The solution required extracting and decoding the Base64 encoded string found in
 * **Base64 Encoding Recognition:** Identifying and decoding Base64 encoded strings is a fundamental skill in CTF challenges.
 * **Thorough Examination:** The importance of checking all page elements, including attributes, comments, and hidden sections.
 * **Progressive Discovery:** Following hints and navigating through different sections of a website to uncover hidden content.
+
