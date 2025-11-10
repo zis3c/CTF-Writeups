@@ -43,7 +43,7 @@ The server response contained valuable information in the form of a cookie that 
 * **Action:** I intercepted the login request using **Burp Suite** and examined the server response headers.
 * **Finding:** The server set a cookie named `secret_recipes` with a Base64 encoded value:
 
-    ```http
+    ```
     Set-Cookie: secret_recipes=eC1jbONUEncjMDBrMWYfbTBuc3R1c1ssMHZ1c19jMDBraWVzX0E2BkRwM004f043D43D
     ```
 
@@ -80,6 +80,7 @@ The solution required decoding the cookie value to reveal the hidden secret.
 * **Developer Tools Proficiency:** Web browser developer tools and intercepting proxies like Burp Suite are essential for examining HTTP headers and cookies.
 * **Information in Plain Sight:** As hinted, important information is often hidden in plain sight within HTTP headers and cookies.
 * **Cookie Security:** While cookies are essential for web functionality, they should not contain sensitive information in easily decodable formats.
+
 
 
 
