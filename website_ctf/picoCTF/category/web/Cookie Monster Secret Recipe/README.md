@@ -55,11 +55,11 @@ The server response contained valuable information in the form of a cookie that 
 
 The solution required decoding the cookie value to reveal the hidden secret.
 
-1.  **Cookie Extraction:** I extracted the `secret_recipes` cookie value from the server response.
+*  **Cookie Extraction:** I extracted the `secret_recipes` cookie value from the server response.
 
-2.  **Base64 Decoding:** The cookie value appeared to be Base64 encoded. I decoded it using Burp Suite's built-in decoder.
+*  **Base64 Decoding:** The cookie value appeared to be Base64 encoded. I decoded it using Burp Suite's built-in decoder.
 
-3.  **Flag Revelation:** After Base64 decoding, the hidden flag was revealed in the cookie value.
+*  **Flag Revelation:** After Base64 decoding, the hidden flag was revealed in the cookie value.
 
 **Decoding Process:**
 - Original Cookie: `eC1jbONUEncjMDBrMWYfbTBuc3R1c1ssMHZ1c19jMDBraWVzX0E2BkRwM004f043D43D`
@@ -80,5 +80,6 @@ The solution required decoding the cookie value to reveal the hidden secret.
 * **Developer Tools Proficiency:** Web browser developer tools and intercepting proxies like Burp Suite are essential for examining HTTP headers and cookies.
 * **Information in Plain Sight:** As hinted, important information is often hidden in plain sight within HTTP headers and cookies.
 * **Cookie Security:** While cookies are essential for web functionality, they should not contain sensitive information in easily decodable formats.
+
 
 
